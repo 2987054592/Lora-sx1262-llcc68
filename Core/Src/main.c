@@ -71,6 +71,14 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+  __HAL_RCC_GPIOD_CLK_ENABLE();                  /* 打开 GPIOD 时钟 */
+  GPIO_InitTypeDef led = {0};
+  led.Pin = GPIO_PIN_12;
+  led.Mode = GPIO_MODE_OUTPUT_PP;
+  led.Pull = GPIO_NOPULL;
+  led.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOD, &led);
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);   /* 拉高点亮，验证程序是否运行 */
 
   /* USER CODE END 1 */
 
@@ -175,7 +183,11 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+int _write(int fd, char *ptr, int len)
+{
+  HAL_UART_Transmit(&huart6, (uint8_t *)ptr, len, 0xFFFF);
+  return len;
+}
 /* USER CODE END 4 */
 
 /**

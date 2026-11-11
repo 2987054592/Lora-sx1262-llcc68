@@ -4,8 +4,9 @@
 
 #ifndef LORACOPY_LORASTRUCT_H
 #define LORACOPY_LORASTRUCT_H
+#include "stm32f4xx_hal.h"
 
-#include "stm32f4xx_hal_spi.h"
+typedef struct __SPI_HandleTypeDef SPI_HandleTypeDef;
 typedef struct {
     GPIO_TypeDef *Gpio; //GPIO端口
     uint16_t pin;  //Pin引脚

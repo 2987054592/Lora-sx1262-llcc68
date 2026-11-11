@@ -115,12 +115,14 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void *argument)
 {
   /* init code for LWIP */
-  MX_LWIP_Init();
+   MX_LWIP_Init();
   /* USER CODE BEGIN StartDefaultTask */
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_12);
+    printf("Hello World!\n");
+    vTaskDelay(500);
   }
   /* USER CODE END StartDefaultTask */
 }
@@ -129,4 +131,3 @@ void StartDefaultTask(void *argument)
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
-
