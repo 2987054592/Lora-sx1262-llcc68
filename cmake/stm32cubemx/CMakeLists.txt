@@ -179,25 +179,6 @@ set(LwIP_Src
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/Third_Party/LwIP/src/apps/mqtt/mqtt.c
 )
 
-# LoRa radio drivers (SX1262 / LLCC68) include paths
-set(LoRa_Include_Dirs
-		${CMAKE_CURRENT_SOURCE_DIR}/../../sx1262/src
-		${CMAKE_CURRENT_SOURCE_DIR}/../../sx1262/interface
-		${CMAKE_CURRENT_SOURCE_DIR}/../../sx1262/example
-		${CMAKE_CURRENT_SOURCE_DIR}/../../llcc68/src
-		${CMAKE_CURRENT_SOURCE_DIR}/../../llcc68/interface
-		${CMAKE_CURRENT_SOURCE_DIR}/../../llcc68/example
-)
-# SX1262 / LLCC68 source files (both drivers together)
-set(LoRa_Drivers_Src
-		${CMAKE_CURRENT_SOURCE_DIR}/../../sx1262/src/driver_sx1262.c
-		${CMAKE_CURRENT_SOURCE_DIR}/../../sx1262/interface/driver_sx1262_interface_template.c
-		${CMAKE_CURRENT_SOURCE_DIR}/../../sx1262/example/driver_sx1262_lora.c
-		${CMAKE_CURRENT_SOURCE_DIR}/../../llcc68/src/driver_llcc68.c
-		${CMAKE_CURRENT_SOURCE_DIR}/../../llcc68/interface/driver_llcc68_interface_template.c
-		${CMAKE_CURRENT_SOURCE_DIR}/../../llcc68/example/driver_llcc68_lora.c
-)
-
 # Link directories setup
 set(MX_LINK_DIRS
 
@@ -206,10 +187,7 @@ set(MX_LINK_DIRS
 set(MX_LINK_LIBS 
     STM32_Drivers
     ${TOOLCHAIN_LINK_LIBRARIES}
-    FreeRTOS
-	LwIP
-	LoRa_Drivers
-	
+    FreeRTOS	LwIP	
 )
 # Interface library for includes and symbols
 add_library(stm32cubemx INTERFACE)
@@ -231,12 +209,6 @@ target_link_libraries(FreeRTOS PUBLIC stm32cubemx)
 add_library(LwIP OBJECT)
 target_sources(LwIP PRIVATE ${LwIP_Src})
 target_link_libraries(LwIP PUBLIC stm32cubemx)
-
-# Create LoRa (SX1262 + LLCC68) static library
-add_library(LoRa_Drivers OBJECT)
-target_sources(LoRa_Drivers PRIVATE ${LoRa_Drivers_Src})
-target_include_directories(LoRa_Drivers PUBLIC ${LoRa_Include_Dirs})
-target_link_libraries(LoRa_Drivers PUBLIC stm32cubemx)
 
 # Add STM32CubeMX generated application sources to the project
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${MX_Application_Src})

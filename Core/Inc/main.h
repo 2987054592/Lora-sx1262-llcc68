@@ -57,36 +57,38 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define LC68_TX_Pin GPIO_PIN_3
+#define LC68_TX_GPIO_Port GPIOH
 #define LC68_CS_Pin GPIO_PIN_4
 #define LC68_CS_GPIO_Port GPIOA
 #define LC68_REST_Pin GPIO_PIN_0
 #define LC68_REST_GPIO_Port GPIOB
 #define LC68_RX_Pin GPIO_PIN_1
 #define LC68_RX_GPIO_Port GPIOB
-#define LC68_TX_Pin GPIO_PIN_11
-#define LC68_TX_GPIO_Port GPIOF
-#define LC_IQ_Pin GPIO_PIN_7
-#define LC_IQ_GPIO_Port GPIOE
-#define LC_IQ_EXTI_IRQn EXTI9_5_IRQn
-#define SX_RX_Pin GPIO_PIN_10
-#define SX_RX_GPIO_Port GPIOE
-#define SX_TX_Pin GPIO_PIN_11
-#define SX_TX_GPIO_Port GPIOE
-#define SX_REST_Pin GPIO_PIN_14
-#define SX_REST_GPIO_Port GPIOE
 #define SX_BUSY_Pin GPIO_PIN_14
 #define SX_BUSY_GPIO_Port GPIOB
+#define LED_Pin GPIO_PIN_12
+#define LED_GPIO_Port GPIOD
 #define USART_TX_Pin GPIO_PIN_6
 #define USART_TX_GPIO_Port GPIOC
 #define USART_RX_Pin GPIO_PIN_7
 #define USART_RX_GPIO_Port GPIOC
+#define SX_IQ_Pin GPIO_PIN_8
+#define SX_IQ_GPIO_Port GPIOC
+#define SX_IQ_EXTI_IRQn EXTI9_5_IRQn
+#define SX_REST_Pin GPIO_PIN_9
+#define SX_REST_GPIO_Port GPIOC
+#define SX_TX_Pin GPIO_PIN_10
+#define SX_TX_GPIO_Port GPIOC
+#define SX_RX_Pin GPIO_PIN_11
+#define SX_RX_GPIO_Port GPIOC
+#define LC_IQ_Pin GPIO_PIN_12
+#define LC_IQ_GPIO_Port GPIOC
+#define LC_IQ_EXTI_IRQn EXTI15_10_IRQn
 #define LC68_BUSY_Pin GPIO_PIN_8
 #define LC68_BUSY_GPIO_Port GPIOB
 #define SX_CS_Pin GPIO_PIN_9
 #define SX_CS_GPIO_Port GPIOB
-#define SX_IQ_Pin GPIO_PIN_0
-#define SX_IQ_GPIO_Port GPIOE
-#define SX_IQ_EXTI_IRQn EXTI0_IRQn
 
 /* USER CODE BEGIN Private defines */
 

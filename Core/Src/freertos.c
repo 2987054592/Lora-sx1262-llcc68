@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "../../App/FreertosTask/FreeRtosHandler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -115,15 +115,13 @@ void MX_FREERTOS_Init(void) {
 void StartDefaultTask(void *argument)
 {
   /* init code for LWIP */
-   MX_LWIP_Init();
+  //MX_LWIP_Init();
   /* USER CODE BEGIN StartDefaultTask */
+  CreateWatchDogTask();
+  CreateInitAllTask();
+  vTaskDelete(NULL);
   /* Infinite loop */
-  for(;;)
-  {
-    HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_12);
-    printf("Hello World!\n");
-    vTaskDelay(500);
-  }
+
   /* USER CODE END StartDefaultTask */
 }
 
@@ -131,3 +129,4 @@ void StartDefaultTask(void *argument)
 /* USER CODE BEGIN Application */
 
 /* USER CODE END Application */
+

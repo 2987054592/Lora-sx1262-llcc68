@@ -647,6 +647,28 @@ void HAL_ETH_MspInit(ETH_HandleTypeDef* ethHandle)
     HAL_NVIC_SetPriority(ETH_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(ETH_IRQn);
   /* USER CODE BEGIN ETH_MspInit 1 */
+    /* 使能 PHY 参考时钟：MCO1(PA8) 输出 HSE 25MHz */
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    GPIO_InitStruct.Pin   = GPIO_PIN_8;
+    GPIO_InitStruct.Mode  = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    GPIO_InitStruct.Alternate = GPIO_AF0_MCO;        // MCO1 复用 AF0
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    HAL_RCC_MCOConfig(RCC_MCO1, RCC_MCO1SOURCE_HSE, RCC_MCODIV_1);
+
+    /* 使能 PHY 复位脚：PI1 配推挽输出，先拉低再拉高释放 PHY */
+    __HAL_RCC_GPIOI_CLK_ENABLE();
+    GPIO_InitStruct.Pin   = GPIO_PIN_1;
+    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
+
+    HAL_GPIO_WritePin(GPIOI, GPIO_PIN_1, GPIO_PIN_RESET);   /* 拉低复位 */
+    { volatile uint32_t d; for(d=0; d<0x20000; d++); }      /* 短延时 */
+    HAL_GPIO_WritePin(GPIOI, GPIO_PIN_1, GPIO_PIN_SET);     /* 拉高释放 */
+    { volatile uint32_t d; for(d=0; d<0x20000; d++); }
 
   /* USER CODE END ETH_MspInit 1 */
   }

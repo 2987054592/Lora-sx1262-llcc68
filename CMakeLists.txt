@@ -34,7 +34,9 @@ enable_language(C ASM)
 # Create an executable object type
 add_executable(${CMAKE_PROJECT_NAME}
         common/LoraStruct.c
-        common/LoraStruct.h)
+        common/LoraStruct.h
+        App/FreertosTask/FreeRtosHandler.c
+        App/FreertosTask/FreeRtosHandler.h)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)

@@ -71,14 +71,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-  __HAL_RCC_GPIOD_CLK_ENABLE();                  /* 打开 GPIOD 时钟 */
-  GPIO_InitTypeDef led = {0};
-  led.Pin = GPIO_PIN_12;
-  led.Mode = GPIO_MODE_OUTPUT_PP;
-  led.Pull = GPIO_NOPULL;
-  led.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOD, &led);
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);   /* 拉高点亮，验证程序是否运行 */
 
   /* USER CODE END 1 */
 
@@ -105,7 +97,7 @@ int main(void)
   MX_SPI2_Init();
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  printf("process is runing\r\n");
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -145,14 +137,13 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
-  RCC_OscInitStruct.PLL.PLLM = 8;
-  RCC_OscInitStruct.PLL.PLLN = 180;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 15;
+  RCC_OscInitStruct.PLL.PLLN = 216;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
