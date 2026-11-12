@@ -164,6 +164,8 @@ standard names. */
 #define USE_CUSTOM_SYSTICK_HANDLER_IMPLEMENTATION 0
 
 /* USER CODE BEGIN Defines */
+#define configCHECK_FOR_STACK_OVERFLOW 1
+#define INCLUDE_uxTaskGetStackHighWaterMark2 1
 /* Section where parameter definitions can be added (for instance, to override default ones in FreeRTOS.h) */
 /* USER CODE END Defines */
 

@@ -36,7 +36,9 @@ add_executable(${CMAKE_PROJECT_NAME}
         common/LoraStruct.c
         common/LoraStruct.h
         App/FreertosTask/FreeRtosHandler.c
-        App/FreertosTask/FreeRtosHandler.h)
+        App/FreertosTask/FreeRtosHandler.h
+        App/UsartHandler/usartHandler.c
+        App/UsartHandler/usartHandler.h)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
