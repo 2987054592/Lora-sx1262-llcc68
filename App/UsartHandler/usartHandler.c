@@ -12,7 +12,8 @@
 static uint8_t  rxBuf[STREAM_BUF_SIZE];
 static uint16_t rxIndex = 0;
 static uint16_t packetLen = 0;
-static uint8_t  receiving = 0;
+
+#define HEADER_LEN  4   // AA BB LEN TYPE，payload 从 [4] 开始
 
 StreamBufferHandle_t uart6_stream;
 static uint8_t buffer[STREAM_BUF_SIZE];
@@ -30,7 +31,6 @@ void UsartCallBack(UART_HandleTypeDef *huart,uint16_t Size) {
 void ByteRead(uint8_t byte) {
     if (rxIndex >= STREAM_BUF_SIZE) {
         rxIndex = 0;
-        receiving = 0;
         packetLen = 0;
         return;
     }
@@ -49,15 +49,12 @@ void ByteRead(uint8_t byte) {
             rxIndex = 0;
             return;
         }
-        receiving = 1;
         return;
     }
-    static const uint8_t HEADER_LEN = 4;   // AA BB len type
-    if (receiving && rxIndex >= HEADER_LEN + packetLen) {
-        // rxBuf[3] = type, rxBuf[4]起 = payload
+    if (rxIndex >= HEADER_LEN + packetLen) {
         processData(rxBuf[3], &rxBuf[4], packetLen);
-        // 复位，接收下一帧
-        rxIndex = 0; receiving = 0; packetLen = 0;
+        rxIndex = 0;
+        packetLen = 0;
     }
 }
 
