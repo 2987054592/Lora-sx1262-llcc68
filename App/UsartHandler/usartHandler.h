@@ -9,7 +9,9 @@
 #include "FreeRTOS.h"
 #include "stream_buffer.h"
 extern StreamBufferHandle_t uart6_stream;
+extern DMA_HandleTypeDef hdma_usart6_rx;
 void UsartDataProcess(uint16_t Timeout);
-void UsartCallBack(UART_HandleTypeDef *huart);
+void UsartCallBack(UART_HandleTypeDef *huart,uint16_t Size);
 void InitUsart(void);
+void processData(uint8_t type, uint8_t *data, uint8_t len);
 #endif //LORACOPY_USARTHANDLER_H
