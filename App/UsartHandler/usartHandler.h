@@ -4,7 +4,7 @@
 
 #ifndef LORACOPY_USARTHANDLER_H
 #define LORACOPY_USARTHANDLER_H
-#define STREAM_BUF_SIZE 256
+#define STREAM_BUF_SIZE 264
 #include "main.h"
 #include "FreeRTOS.h"
 #include "stream_buffer.h"

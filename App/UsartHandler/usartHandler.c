@@ -98,5 +98,15 @@ void InitUsart(void) {
 }
 
 void processData(uint8_t type, uint8_t *data, uint8_t len) {
-
+    if (type == 0xDA) {
+        //OTA_HEADER
+    }else if (type == 0xDB) {
+        //OTA_PACKET
+    }else if (type == 0xDD) {
+        //重启mcu
+    }else if (type == 0xDE) {
+        //ETH_HEADER
+    }else if (type == 0xDC) {
+        printf("%.*s\r\n", len, (char *)data);
+    }
 }
