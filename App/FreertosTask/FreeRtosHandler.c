@@ -64,6 +64,8 @@ void CreateWatchDogTask() {
     if (WatchDogTaskHandle == NULL) {
         printf("WATCHDOG CREATE FAILED   free=%d\r\n", (int)xPortGetFreeHeapSize());
     }
+    const uint16_t ux_task_get_stack_high_water_mark2 = uxTaskGetStackHighWaterMark2(WatchDogTaskHandle);
+    printf("WATCHDOG STACK HIGH WATER MARK: %d\r\n", ux_task_get_stack_high_water_mark2);
 }
 
 void CreateInitAllTask() {
@@ -71,16 +73,23 @@ void CreateInitAllTask() {
     if (InitLWIPTaskHandle == NULL) {
         printf("INIT LWIP CREATE FAILED   free=%d\r\n", (int)xPortGetFreeHeapSize());
     }
+    uint16_t ux_task_get_stack_high_water_mark2 = uxTaskGetStackHighWaterMark2(InitLWIPTaskHandle);
+    printf("INIT LWIP STACK HIGH WATER MARK: %d\r\n", ux_task_get_stack_high_water_mark2);
 
-    IrqTaskHandle = osThreadNew(CreateIrqTask, NULL, &IrqTask_attributes);
+    IrqTaskHandle= osThreadNew(CreateIrqTask, NULL, &IrqTask_attributes);
     if (IrqTaskHandle == NULL) {
         printf("IRQ WRAPPER CREATE FAILED   free=%d\r\n", (int)xPortGetFreeHeapSize());
     }
+    ux_task_get_stack_high_water_mark2 = uxTaskGetStackHighWaterMark2(IrqTaskHandle);
+    printf("IRQQ STACK HIGH WATER MARK: %d\r\n", ux_task_get_stack_high_water_mark2);
 
     UsartTaskHandle = osThreadNew(UsartTask, NULL, &UsartTask_attributes);
     if (UsartTaskHandle == NULL) {
         printf("USART CREATE FAILED   free=%d\r\n", (int)xPortGetFreeHeapSize());
     }
+    ux_task_get_stack_high_water_mark2 = uxTaskGetStackHighWaterMark2(UsartTaskHandle);
+    printf("USART STACK HIGH WATER MARK: %d\r\n", ux_task_get_stack_high_water_mark2);
+
 
     vTaskDelete(NULL);
 }
@@ -122,11 +131,16 @@ void CreateIrqTask(void *argument) {
     if (Sx1262IrqTaskHandle == NULL) {
         printf("SX1262 IRQ CREATE FAILED  free=%d\r\n", (int)xPortGetFreeHeapSize());
     }
+    uint16_t ux_task_get_stack_high_water_mark2 = uxTaskGetStackHighWaterMark2(Sx1262IrqTaskHandle);
+    printf("SX1262 IRQ STACK HIGH WATER MARK: %d\r\n", ux_task_get_stack_high_water_mark2);
 
     Llcc68IrqTaskHandle = osThreadNew(Llcc68IrqTask,NULL,&Llcc68IrqTask_attributes);
     if (Llcc68IrqTaskHandle == NULL) {
         printf("LLCC68 IRQ CREATE FAILED  free=%d\r\n", (int)xPortGetFreeHeapSize());
     }
+    ux_task_get_stack_high_water_mark2 = uxTaskGetStackHighWaterMark2(Llcc68IrqTaskHandle);
+    printf("LLCC68 IRQ STACK HIGH WATER MARK: %d\r\n", ux_task_get_stack_high_water_mark2);
 
     vTaskDelete(NULL);
 }
+

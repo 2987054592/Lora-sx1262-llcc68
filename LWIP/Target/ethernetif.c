@@ -327,9 +327,7 @@ static void low_level_init(struct netif *netif)
   }
   else
   {
-    //Error_Handler();
-    netif_set_link_down(netif);
-    netif_set_down(netif);
+    Error_Handler();
   }
 #endif /* LWIP_ARP || LWIP_ETHERNET */
 
