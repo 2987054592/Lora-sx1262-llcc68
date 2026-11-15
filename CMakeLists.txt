@@ -38,7 +38,11 @@ add_executable(${CMAKE_PROJECT_NAME}
         App/FreertosTask/FreeRtosHandler.c
         App/FreertosTask/FreeRtosHandler.h
         App/UsartHandler/usartHandler.c
-        App/UsartHandler/usartHandler.h)
+        App/UsartHandler/usartHandler.h
+        App/Flash/bspFlash.c
+        App/Flash/bspFlash.h
+        App/Tcp/TcpDataProcess.c
+        App/Tcp/TcpDataProcess.h)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)

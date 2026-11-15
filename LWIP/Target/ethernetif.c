@@ -33,7 +33,7 @@
 
 /* Within 'USER CODE' section, code will be kept by default at each generation */
 /* USER CODE BEGIN 0 */
-
+#include "../../App/Flash/bspFlash.h"
 /* USER CODE END 0 */
 
 /* Private define ------------------------------------------------------------*/
@@ -206,6 +206,15 @@ static void low_level_init(struct netif *netif)
   heth.Init.RxBuffLen = 1536;
 
   /* USER CODE BEGIN MACADDRESS */
+  /* 用Flash中的MAC地址覆盖默认值, 无有效配置时保持默认 0x00:80:E1:00:00:00 */
+  if (EthCfgInit()) {
+    MACAddr[0] = g_ethCfg.mac[0];
+    MACAddr[1] = g_ethCfg.mac[1];
+    MACAddr[2] = g_ethCfg.mac[2];
+    MACAddr[3] = g_ethCfg.mac[3];
+    MACAddr[4] = g_ethCfg.mac[4];
+    MACAddr[5] = g_ethCfg.mac[5];
+  }
 
   /* USER CODE END MACADDRESS */
 

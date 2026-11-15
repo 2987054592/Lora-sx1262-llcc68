@@ -29,7 +29,8 @@
 #include <string.h>
 
 /* USER CODE BEGIN 0 */
-
+#include "../../common/LoraStruct.h"
+#include "../../App/Flash/bspFlash.h"
 /* USER CODE END 0 */
 /* Private function prototypes -----------------------------------------------*/
 static void ethernet_link_status_updated(struct netif *netif);
@@ -77,6 +78,12 @@ void MX_LWIP_Init(void)
   GATEWAY_ADDRESS[3] = 100;
 
 /* USER CODE BEGIN IP_ADDRESSES */
+  if (EthCfgInit()) {
+    memcpy(IP_ADDRESS, g_ethCfg.ip, 4);
+    memcpy(NETMASK_ADDRESS, g_ethCfg.netMask, 4);
+    memcpy(GATEWAY_ADDRESS, g_ethCfg.gateway, 4);
+  }
+
 /* USER CODE END IP_ADDRESSES */
 
   /* Initialize the LwIP stack with RTOS */
@@ -211,4 +218,3 @@ u32_t sio_tryread(sio_fd_t fd, u8_t *data, u32_t len)
   return recved_bytes;
 }
 #endif /* MDK ARM Compiler */
-

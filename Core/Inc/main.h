@@ -32,6 +32,7 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -57,6 +58,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define FlashCs_Pin GPIO_PIN_6
+#define FlashCs_GPIO_Port GPIOF
 #define LC68_TX_Pin GPIO_PIN_3
 #define LC68_TX_GPIO_Port GPIOH
 #define LC68_CS_Pin GPIO_PIN_4

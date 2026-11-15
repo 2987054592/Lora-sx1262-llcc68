@@ -1,4 +1,4 @@
-/* USER CODE BEGIN Header */
+﻿/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * File Name          : LWIP.h
@@ -41,7 +41,7 @@
 #endif /* WITH_RTOS */
 
 /* USER CODE BEGIN 0 */
-
+extern struct netif gnetif;
 /* USER CODE END 0 */
 
 /* Global Variables ----------------------------------------------------------*/
