@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2015 - present LibDriver All rights reserved
- * 
+ *
  * The MIT License (MIT)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,10 +19,10 @@
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE. 
+ * SOFTWARE.
  *
  * @file      driver_sx1262_interface_template.c
- * @brief     driver sx1262 interface template source file
+ * @brief     driver sx1262 interface source file (STM32 HAL)
  * @version   1.0.0
  * @author    Shifeng Li
  * @date      2024-10-30
@@ -33,8 +33,10 @@
  * <tr><td>2024/10/30  <td>1.0      <td>Shifeng Li  <td>first upload
  * </table>
  */
- 
+
 #include "driver_sx1262_interface.h"
+#include "spi.h"
+#include "main.h"
 
 /**
  * @brief  interface spi bus init
@@ -45,6 +47,7 @@
  */
 uint8_t sx1262_interface_spi_init(void)
 {
+    /* SPI2 has been initialized by MX_SPI2_Init, do nothing here. */
     return 0;
 }
 
@@ -74,7 +77,27 @@ uint8_t sx1262_interface_spi_deinit(void)
 uint8_t sx1262_interface_spi_write_read(uint8_t *in_buf, uint32_t in_len,
                                         uint8_t *out_buf, uint32_t out_len)
 {
-    return 0;
+    HAL_StatusTypeDef st = HAL_OK;
+
+    HAL_GPIO_WritePin(SX_CS_GPIO_Port, SX_CS_Pin, GPIO_PIN_RESET);
+    if (out_buf == NULL || out_len == 0)
+    {
+        /* pure write: send command + data */
+        st = HAL_SPI_Transmit(&hspi2, in_buf, in_len, HAL_MAX_DELAY);
+    }
+    else
+    {
+        /* command + read back: send command, then clock out data on the
+         * same CS low period (SX126x half-duplex protocol). */
+        st = HAL_SPI_Transmit(&hspi2, in_buf, in_len, HAL_MAX_DELAY);
+        if (st == HAL_OK)
+        {
+            st = HAL_SPI_Receive(&hspi2, out_buf, out_len, HAL_MAX_DELAY);
+        }
+    }
+    HAL_GPIO_WritePin(SX_CS_GPIO_Port, SX_CS_Pin, GPIO_PIN_SET);
+
+    return (st == HAL_OK) ? 0 : 1;
 }
 
 /**
@@ -111,6 +134,8 @@ uint8_t sx1262_interface_reset_gpio_deinit(void)
  */
 uint8_t sx1262_interface_reset_gpio_write(uint8_t data)
 {
+    HAL_GPIO_WritePin(SX_REST_GPIO_Port, SX_REST_Pin,
+                      data ? GPIO_PIN_SET : GPIO_PIN_RESET);
     return 0;
 }
 
@@ -148,6 +173,11 @@ uint8_t sx1262_interface_busy_gpio_deinit(void)
  */
 uint8_t sx1262_interface_busy_gpio_read(uint8_t *value)
 {
+    if (value == NULL)
+    {
+        return 1;
+    }
+    *value = (HAL_GPIO_ReadPin(SX_BUSY_GPIO_Port, SX_BUSY_Pin) == GPIO_PIN_SET) ? 1 : 0;
     return 0;
 }
 
@@ -158,7 +188,7 @@ uint8_t sx1262_interface_busy_gpio_read(uint8_t *value)
  */
 void sx1262_interface_delay_ms(uint32_t ms)
 {
-
+    HAL_Delay(ms);
 }
 
 /**
@@ -168,7 +198,10 @@ void sx1262_interface_delay_ms(uint32_t ms)
  */
 void sx1262_interface_debug_print(const char *const fmt, ...)
 {
-
+    va_list args;
+    va_start(args, fmt);
+    vprintf(fmt, args);
+    va_end(args);
 }
 
 /**
@@ -180,73 +213,7 @@ void sx1262_interface_debug_print(const char *const fmt, ...)
  */
 void sx1262_interface_receive_callback(uint16_t type, uint8_t *buf, uint16_t len)
 {
-    switch (type)
-    {
-        case SX1262_IRQ_TX_DONE :
-        {
-            sx1262_interface_debug_print("sx1262: irq tx done.\n");
-            
-            break;
-        }
-        case SX1262_IRQ_RX_DONE :
-        {
-            sx1262_interface_debug_print("sx1262: irq rx done.\n");
-            
-            break;
-        }
-        case SX1262_IRQ_PREAMBLE_DETECTED :
-        {
-            sx1262_interface_debug_print("sx1262: irq preamble detected.\n");
-            
-            break;
-        }
-        case SX1262_IRQ_SYNC_WORD_VALID :
-        {
-            sx1262_interface_debug_print("sx1262: irq valid sync word detected.\n");
-            
-            break;
-        }
-        case SX1262_IRQ_HEADER_VALID :
-        {
-            sx1262_interface_debug_print("sx1262: irq valid header.\n");
-            
-            break;
-        }
-        case SX1262_IRQ_HEADER_ERR :
-        {
-            sx1262_interface_debug_print("sx1262: irq header error.\n");
-            
-            break;
-        }
-        case SX1262_IRQ_CRC_ERR :
-        {
-            sx1262_interface_debug_print("sx1262: irq crc error.\n");
-            
-            break;
-        }
-        case SX1262_IRQ_CAD_DONE :
-        {
-            sx1262_interface_debug_print("sx1262: irq cad done.\n");
-            
-            break;
-        }
-        case SX1262_IRQ_CAD_DETECTED :
-        {
-            sx1262_interface_debug_print("sx1262: irq cad detected.\n");
-            
-            break;
-        }
-        case SX1262_IRQ_TIMEOUT :
-        {
-            sx1262_interface_debug_print("sx1262: irq timeout.\n");
-            
-            break;
-        }
-        default :
-        {
-            sx1262_interface_debug_print("sx1262: unknown code.\n");
-            
-            break;
-        }
-    }
+    (void)type;
+    (void)buf;
+    (void)len;
 }

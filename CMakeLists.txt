@@ -42,7 +42,9 @@ add_executable(${CMAKE_PROJECT_NAME}
         App/Flash/bspFlash.c
         App/Flash/bspFlash.h
         App/Tcp/TcpDataProcess.c
-        App/Tcp/TcpDataProcess.h)
+        App/Tcp/TcpDataProcess.h
+        common/LoraDevice.c
+        common/LoraDevice.h)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
@@ -55,12 +57,22 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
-)
+    sx1262/src/driver_sx1262.c
+    sx1262/interface/driver_sx1262_interface_template.c
+    sx1262/example/driver_sx1262_lora.c
+    llcc68/src/driver_llcc68.c
+    llcc68/interface/driver_llcc68_interface_template.c
+    llcc68/example/driver_llcc68_lora.c)
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
-)
+    ${CMAKE_CURRENT_SOURCE_DIR}/sx1262/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/sx1262/interface
+    ${CMAKE_CURRENT_SOURCE_DIR}/sx1262/example
+    ${CMAKE_CURRENT_SOURCE_DIR}/llcc68/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/llcc68/interface
+    ${CMAKE_CURRENT_SOURCE_DIR}/llcc68/example)
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
