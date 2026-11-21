@@ -74,11 +74,25 @@ uint8_t llcc68_interface_spi_deinit(void)
  *             - 1 write read failed
  * @note       none
  */
+/* 等待 BUSY 拉低(与厂商参考实现一致);芯片忙时不接受时钟 */
+static void lc68_wait_busy(void)
+{
+    uint32_t t0 = HAL_GetTick();
+    while (HAL_GPIO_ReadPin(LC68_BUSY_GPIO_Port, LC68_BUSY_Pin) == GPIO_PIN_SET)
+    {
+        if (HAL_GetTick() - t0 > 200)
+        {
+            break;
+        }
+    }
+}
+
 uint8_t llcc68_interface_spi_write_read(uint8_t *in_buf, uint32_t in_len,
                                         uint8_t *out_buf, uint32_t out_len)
 {
     HAL_StatusTypeDef st = HAL_OK;
 
+    lc68_wait_busy();
     HAL_GPIO_WritePin(LC68_CS_GPIO_Port, LC68_CS_Pin, GPIO_PIN_RESET);
     if (out_buf == NULL || out_len == 0)
     {
@@ -92,6 +106,7 @@ uint8_t llcc68_interface_spi_write_read(uint8_t *in_buf, uint32_t in_len,
         st = HAL_SPI_Transmit(&hspi1, in_buf, in_len, HAL_MAX_DELAY);
         if (st == HAL_OK)
         {
+            lc68_wait_busy();
             st = HAL_SPI_Receive(&hspi1, out_buf, out_len, HAL_MAX_DELAY);
         }
     }
