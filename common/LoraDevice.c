@@ -78,9 +78,9 @@ uint8_t lora_radio_config(LoraInstance *inst) {
             sx1262_set_regulator_mode(h, SX1262_REGULATOR_MODE_DC_DC_LDO);
             sx1262_set_pa_config(h, 0x02, 0x03);                          /* +17dBm */
             sx1262_set_rx_tx_fallback_mode(h, SX1262_RX_TX_FALLBACK_MODE_STDBY_XOSC);
-            sx1262_clear_irq_status(h, 0x03FF);
+            sx1262_clear_irq_status(h, LORA_IRQ_ALL);
             /* DIO1 全开：CAD/TX/RX 完成都走同一根 DIO1 进 EXTI */
-            sx1262_set_dio_irq_params(h, 0x03FF, 0x03FF, 0x0000, 0x0000);
+            sx1262_set_dio_irq_params(h, LORA_IRQ_ALL, LORA_IRQ_ALL, LORA_IRQ_NONE, LORA_IRQ_NONE);
             if (sx1262_set_packet_type(h, SX1262_PACKET_TYPE_LORA) != 0) {
                 return 1;   /* 切 LoRa 模式失败 */
             }
@@ -98,8 +98,8 @@ uint8_t lora_radio_config(LoraInstance *inst) {
             llcc68_set_regulator_mode(h, LLCC68_REGULATOR_MODE_DC_DC_LDO);
             llcc68_set_pa_config(h, 0x02, 0x03);                          /* +17dBm */
             llcc68_set_rx_tx_fallback_mode(h, LLCC68_RX_TX_FALLBACK_MODE_STDBY_XOSC);
-            llcc68_clear_irq_status(h, 0x03FF);
-            llcc68_set_dio_irq_params(h, 0x03FF, 0x03FF, 0x0000, 0x0000);
+            llcc68_clear_irq_status(h, LORA_IRQ_ALL);
+            llcc68_set_dio_irq_params(h, LORA_IRQ_ALL, LORA_IRQ_ALL, LORA_IRQ_NONE, LORA_IRQ_NONE);
             if (llcc68_set_packet_type(h, LLCC68_PACKET_TYPE_LORA) != 0) {
                 return 1;
             }
@@ -194,7 +194,7 @@ uint8_t lora_start_cad(LoraInstance *inst) {
     switch (inst->chip) {
         case LORA_CHIP_SX1262: {
             sx1262_handle_t *h = (sx1262_handle_t *)inst->context;
-            sx1262_clear_irq_status(h,0x03FF);
+            sx1262_clear_irq_status(h, LORA_IRQ_ALL);
             h->cad_done = 0;
             h->cad_detected = 0;
             if (sx1262_set_cad(h) != 0) {
@@ -204,7 +204,7 @@ uint8_t lora_start_cad(LoraInstance *inst) {
         }
         case LORA_CHIP_LLCC68: {
             llcc68_handle_t *hs = (llcc68_handle_t *)inst->context;
-            llcc68_clear_irq_status(hs,0x03FF);
+            llcc68_clear_irq_status(hs, LORA_IRQ_ALL);
             hs->cad_done = 0;
             hs->cad_detected = 0;
             if (llcc68_set_cad(hs) != 0) {

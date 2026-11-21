@@ -65,6 +65,26 @@ typedef enum {
     LORA_RADIO_IDLE = 0, LORA_RADIO_CAD, LORA_RADIO_RX, LORA_RADIO_TX
 } lora_radio_t;
 
+/* ---- 芯片中断掩码（位定义与 SX1262/LLCC68 驱动 IRQ 对齐） ---- */
+typedef enum {
+    LORA_IRQ_NONE              = 0x0000,    /**< 不映射任何中断 */
+    LORA_IRQ_TX_DONE           = (1 << 0),  /**< 发送完成 */
+    LORA_IRQ_RX_DONE           = (1 << 1),  /**< 接收完成 */
+    LORA_IRQ_PREAMBLE_DETECTED = (1 << 2),  /**< 检测到前导码 */
+    LORA_IRQ_SYNC_WORD_VALID   = (1 << 3),  /**< 同步字有效 */
+    LORA_IRQ_HEADER_VALID      = (1 << 4),  /**< 报头有效 */
+    LORA_IRQ_HEADER_ERR        = (1 << 5),  /**< 报头错误 */
+    LORA_IRQ_CRC_ERR           = (1 << 6),  /**< CRC 校验错误 */
+    LORA_IRQ_CAD_DONE          = (1 << 7),  /**< CAD 检测结束 */
+    LORA_IRQ_CAD_DETECTED      = (1 << 8),  /**< CAD 检测到信号 */
+    LORA_IRQ_TIMEOUT           = (1 << 9),  /**< 接收/发送超时 */
+    LORA_IRQ_ALL               = (LORA_IRQ_TX_DONE | LORA_IRQ_RX_DONE |
+                                  LORA_IRQ_PREAMBLE_DETECTED | LORA_IRQ_SYNC_WORD_VALID |
+                                  LORA_IRQ_HEADER_VALID | LORA_IRQ_HEADER_ERR |
+                                  LORA_IRQ_CRC_ERR | LORA_IRQ_CAD_DONE |
+                                  LORA_IRQ_CAD_DETECTED | LORA_IRQ_TIMEOUT), /**< 驱动定义的全部中断（0x03FF） */
+} lora_irq_mask_t;
+
 /* ---- 业务阶段 ---- */
 typedef enum {
     LORA_PHASE_IDLE = 0, LORA_PHASE_SCAN, LORA_PHASE_MONITOR, LORA_PHASE_GUARD
