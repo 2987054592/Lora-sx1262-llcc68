@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (c) 2015 - present LibDriver All rights reserved
  *
  * The MIT License (MIT)
@@ -37,6 +37,7 @@
 #include "driver_sx1262_interface.h"
 #include "spi.h"
 #include "main.h"
+#include <stdarg.h>
 
 /**
  * @brief  interface spi bus init

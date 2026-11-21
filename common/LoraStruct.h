@@ -194,6 +194,7 @@ struct _LoraInstance {
 
     uint8_t  *rx_buf;             /**< 接收缓冲 */
     uint16_t rx_len;
+    void (*callBack)(uint16_t type, uint8_t *buf, uint16_t len);   /* 驱动 IRQ 事件回调 */
 };
 typedef struct {
     uint8_t serverIp[4];

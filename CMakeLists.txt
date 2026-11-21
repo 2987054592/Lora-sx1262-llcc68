@@ -44,7 +44,9 @@ add_executable(${CMAKE_PROJECT_NAME}
         App/Tcp/TcpDataProcess.c
         App/Tcp/TcpDataProcess.h
         common/LoraDevice.c
-        common/LoraDevice.h)
+        common/LoraDevice.h
+        common/LoraManager.c
+        common/LoraManager.h)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)

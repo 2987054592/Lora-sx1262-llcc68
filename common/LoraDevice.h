@@ -7,6 +7,7 @@
 #include "main.h"
 #include "LoraStruct.h"
 uint8_t lora_driver_bind(LoraInstance *inst, void *handle);   // 绑定底层库句柄 + LINK 宏填函数指针 + init
+uint8_t lora_radio_config(LoraInstance *inst);                // 一次性LoRa模式配置(packet type/DIO IRQ/PA/standby等)
 uint8_t lora_apply_config(LoraInstance *inst);                // mod/pkg/cad/rf 全参数一次写入芯片
 void    lora_load_scan_item(LoraInstance *inst, const lora_scan_item_t *item);  // 扫描表项→实例参数分组
 uint8_t lora_start_cad(LoraInstance *inst);                   // 异步发 SET_CAD（不等待）

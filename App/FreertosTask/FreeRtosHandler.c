@@ -6,6 +6,7 @@
 #include "iwdg.h"
 #include "stm32f4xx_hal.h"
 #include "cmsis_os.h"
+#include "../../common/LoraManager.h"
 #include "FreeRTOS.h"
 #include "lwip.h"
 #include "sockets.h"
@@ -78,12 +79,12 @@ osThreadId_t Sx1262IrqTaskHandle;
 const osThreadAttr_t Sx1262IrqTask_attributes = {
     .name = "Sx1262IrqTask",
     .stack_size = 1024 * 4,
-    .priority = osPriorityNormal,
+    .priority = osPriorityAboveNormal,
 };
 const osThreadAttr_t Llcc68IrqTask_attributes = {
     .name = "Llcc68IrqTask",
     .stack_size = 1024 * 4,
-    .priority = osPriorityNormal
+    .priority = osPriorityAboveNormal
 };
 
 
@@ -92,6 +93,24 @@ void WatchDogTask(void *argument);
 void InitLWIPTask(void *argument);
 void UsartTask(void *argument);
 void CreateIrqTask(void *argument);
+
+
+//lora任务
+osThreadId_t LoraInitTaskHandle;
+osThreadId_t LoraTestTaskHandle;
+void LoraInitTask(void *argument);
+void LoraTestTask(void *argument);
+const osThreadAttr_t LoraInit_attributes = {
+    .name = "LoraInit",
+    .stack_size = 512 * 4,
+    .priority = osPriorityNormal,
+};
+const osThreadAttr_t LoraTest_attributes = {
+    .name = "LoraTest",
+    .stack_size = 1024 * 4,
+    .priority = osPriorityNormal,
+};
+
 
 
 /**
@@ -137,7 +156,18 @@ void CreateInitAllTask() {
     }
     ux_task_get_stack_high_water_mark2 = uxTaskGetStackHighWaterMark2(TcpTaskHandle);
     printf("TCP STACK HIGH WATER MARK: %d\r\n", ux_task_get_stack_high_water_mark2);
+
+    LoraInitTaskHandle = osThreadNew(LoraInitTask, NULL, &LoraInit_attributes);
+    if (LoraInitTaskHandle == NULL) {
+        printf("LORA INIT CREATE FAILED   free=%d\r\n", (int)xPortGetFreeHeapSize());
+    }
+    ux_task_get_stack_high_water_mark2 = uxTaskGetStackHighWaterMark2(LoraInitTaskHandle);
+    printf("LORA INIT STACK HIGH WATER MARK: %d\r\n", ux_task_get_stack_high_water_mark2);
+
+
     vTaskDelete(NULL);
+
+
 }
 
 void WatchDogTask(void *argument) {
@@ -159,13 +189,17 @@ void UsartTask(void *argument) {
 }
 void Llcc68IrqTask(void *argument) {
     for (;;) {
-        vTaskDelay(500);
+        ulTaskNotifyTake(pdTRUE,pdMS_TO_TICKS(1000));
+        LoraInstance * lora_instance = lora_get_llcc68();
+        lora_irq_handler(lora_instance);
     }
 }
 
 void Sx1262IrqTask(void *argument) {
     for (;;) {
-        vTaskDelay(500);
+        ulTaskNotifyTake(pdTRUE,pdMS_TO_TICKS(1000));
+        LoraInstance * lora_instance = lora_get_sx1262();
+        lora_irq_handler(lora_instance);
     }
 }
 
@@ -243,4 +277,24 @@ void EthTcpConnectTask(void *argument) {
 }
 void EthTcpSendTask(void *argument) {
     EthTcpSendTaskLoop();
+}
+
+void LoraInitTask(void *argument) {
+    //初始化芯片
+    uint8_t lora_init = LoraInit();
+    if (lora_init == 0) {
+        printf("LORA INIT SUCCESS\r\n");
+    } else {
+        printf("LORA INIT FAILED\r\n");
+    }
+    //测试任务
+    LoraTestTaskHandle = osThreadNew(LoraTestTask, NULL, &LoraTest_attributes);
+    if (LoraTestTaskHandle == NULL) {
+        printf("LORA TEST CREATE FAILED   free=%d\r\n", (int)xPortGetFreeHeapSize());
+    }
+    vTaskDelete(NULL);
+
+}
+void LoraTestTask(void *argument) {
+    LoraTest();
 }

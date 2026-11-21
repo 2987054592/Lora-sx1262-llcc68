@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (c) 2015 - present LibDriver All rights reserved
  *
  * The MIT License (MIT)
@@ -37,6 +37,7 @@
 #include "driver_llcc68_interface.h"
 #include "spi.h"
 #include "main.h"
+#include <stdarg.h>
 
 /**
  * @brief  interface spi bus init
@@ -47,7 +48,6 @@
  */
 uint8_t llcc68_interface_spi_init(void)
 {
-    /* SPI1 has been initialized by MX_SPI1_Init, do nothing here. */
     return 0;
 }
 
